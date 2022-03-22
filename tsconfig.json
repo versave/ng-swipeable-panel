@@ -11,6 +11,12 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
+    "paths": {
+      "ng-swipeable-panel": [
+        "dist/ng-swipeable-panel/ng-swipeable-panel",
+        "dist/ng-swipeable-panel"
+      ]
+    },
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
