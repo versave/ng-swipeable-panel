@@ -8,9 +8,8 @@ describe('NgSwipeablePanelComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ NgSwipeablePanelComponent ]
-    })
-    .compileComponents();
+      declarations: [NgSwipeablePanelComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

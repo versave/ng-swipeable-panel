@@ -1,0 +1,35 @@
+<div
+    [ngClass]="{
+        'swipeable-container-wrapper': true,
+        'locked-interactions': lockedInteractions
+    }"
+>
+    <div
+        #swipeableContainer
+        [ngStyle]="{
+            height: maxHeight === 0 ? 'auto' : currentHeight + 'px',
+            transition: transition
+                ? 'height .1s linear, padding .1s linear'
+                : 'none'
+        }"
+        [ngClass]="{
+            'swipeable-container': true,
+            'app-content': true,
+            overflows: maxHeight >= maxStaticHeight,
+            'hide-panel': hidePanel
+        }"
+        (transitionend)="transitionEnd()"
+    >
+        <div
+            class="handle outgrow-content"
+            (touchmove)="touchMove($event)"
+            (touchend)="touchEnd()"
+        ></div>
+
+        <div class="content">
+            <ng-container *ngIf="templateRef">
+                <ng-template *ngTemplateOutlet="templateRef"></ng-template>
+            </ng-container>
+        </div>
+    </div>
+</div>
