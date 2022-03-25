@@ -1,0 +1,29 @@
+.container {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	border-radius: 12px 12px 0 0;
+	background: #fff;
+	box-shadow: 0 0 12px -4px #000;
+	box-sizing: border-box;
+	touch-action: none;
+	padding-bottom: 20px;
+}
+
+.handle {
+	position: relative;
+
+	&:after {
+		content: '';
+		display: block;
+		width: 28px;
+		height: 2px;
+		margin: 15px auto 0;
+		border-radius: 2px;
+		background: #000;
+	}
+}

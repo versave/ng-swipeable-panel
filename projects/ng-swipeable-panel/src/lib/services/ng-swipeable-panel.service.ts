@@ -5,7 +5,7 @@ import {
 	TemplateRef,
 	ViewContainerRef,
 } from '@angular/core';
-import { NgSwipeablePanelComponent } from '../components/ng-swipeable-panel/ng-swipeable-panel.component';
+import { NgSwipeablePanelExternalComponent } from '../components/ng-swipeable-panel-external/ng-swipeable-panel-external.component';
 
 @Injectable({
 	providedIn: 'root',
@@ -29,7 +29,7 @@ export class NgSwipeablePanelService {
 			console.log('tr');
 			const factory =
 				this.componentFactoryResolver.resolveComponentFactory(
-					NgSwipeablePanelComponent,
+					NgSwipeablePanelExternalComponent,
 				);
 			let componentRef = this._containerRef?.createComponent(factory);
 
@@ -73,9 +73,9 @@ export class NgSwipeablePanelService {
 	}
 
 	private addPanelSettings(
-		componentRef: ComponentRef<NgSwipeablePanelComponent>,
+		componentRef: ComponentRef<NgSwipeablePanelExternalComponent>,
 		settings: PanelSettings,
-	): ComponentRef<NgSwipeablePanelComponent> {
+	): ComponentRef<NgSwipeablePanelExternalComponent> {
 		for (const [key, value] of Object.entries(settings)) {
 			componentRef.instance[key as keyof PanelSettings] =
 				value as boolean & HTMLElement;
@@ -87,7 +87,7 @@ export class NgSwipeablePanelService {
 
 interface PanelRef {
 	id: string;
-	componentRef: ComponentRef<NgSwipeablePanelComponent>;
+	componentRef: ComponentRef<NgSwipeablePanelExternalComponent>;
 }
 
 interface PanelSettings {
