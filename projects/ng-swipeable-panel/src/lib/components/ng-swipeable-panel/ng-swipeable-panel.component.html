@@ -1,17 +1,17 @@
 <div
 	#container
-	class="container"
 	[ngClass]="{ transition: transition }"
 	[style]="{
 		transform: handleTransform(),
 		height: maxContainerHeight + 'px'
 	}"
+	class="container"
 >
 	<div
 		class="handle"
 		[style.height]="minContainerHeight + 'px'"
-		(touchmove)="touchMove($event)"
-		(touchend)="touchEnd()"
+		(touchmove)="setTouchPositions($event)"
+		(touchend)="setTouchEndPositions()"
 	></div>
 
 	<div class="content">

@@ -1,12 +1,6 @@
-import {
-	AfterViewInit,
-	ChangeDetectionStrategy,
-	ChangeDetectorRef,
-	Component,
-	ElementRef,
-	ViewChild,
-} from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NgSwipeablePanelBaseComponent } from '../ng-swipeable-panel-base/ng-swipeable-panel-base.component';
+import { filter } from 'rxjs';
 
 @Component({
 	selector: 'ng-swipeable-panel',
@@ -16,34 +10,26 @@ import { NgSwipeablePanelBaseComponent } from '../ng-swipeable-panel-base/ng-swi
 		'./ng-swipeable-panel.component.scss',
 	],
 	inputs: NgSwipeablePanelBaseComponent.inputs,
-	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NgSwipeablePanelComponent
-	extends NgSwipeablePanelBaseComponent
-	implements AfterViewInit
-{
-	@ViewChild('container') public container: ElementRef<HTMLDivElement>;
+export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent implements OnInit {
+	@ViewChild('container', { static: true }) public container: ElementRef<HTMLDivElement>;
 
 	public currentPosition = this.minContainerHeight;
 
 	private startTouchYPosition = 0;
 	private touchYPosition = 0;
 
-	constructor(private cdr: ChangeDetectorRef) {
+	constructor() {
 		super();
 	}
 
-	public ngAfterViewInit(): void {
-		this.setInitialTouchPosition();
+	public ngOnInit(): void {
+		this.setInitialTouchPositions();
+		this.readjustOnWindowResize();
 	}
 
-	public handleTransform(): string {
-		const initialY = `calc(100% - ${this.currentPosition}px)`;
-		return `translate3d(0, ${initialY}, 0)`;
-	}
-
-	public touchMove(e: TouchEvent): void {
-		const touchY = e.touches[0].clientY;
+	public setTouchPositions(event: TouchEvent): void {
+		const touchY = event.touches[0].clientY;
 
 		if (this.startTouchYPosition === 0) {
 			this.startTouchYPosition = touchY;
@@ -65,11 +51,9 @@ export class NgSwipeablePanelComponent
 		} else {
 			this.currentPosition = this.touchYPosition;
 		}
-
-		console.log(this.currentPosition);
 	}
 
-	public touchEnd(): void {
+	public setTouchEndPositions(): void {
 		this.transition = true;
 
 		if (this.isHalfAboveOrBelow('below', this.currentPosition)) {
@@ -81,12 +65,26 @@ export class NgSwipeablePanelComponent
 		}
 	}
 
-	private setInitialTouchPosition(): void {
+	public handleTransform(): string {
+		const yPosition = `calc(100% - ${this.currentPosition}px)`;
+		return `translate3d(0, ${yPosition}, 0)`;
+	}
+
+	private setInitialTouchPositions(): void {
+		this.currentPosition = this.minContainerHeight;
+
 		if (this.startExpanded) {
 			this.currentPosition = this.maxContainerHeight;
 			this.touchYPosition = this.maxContainerHeight;
-			this.startTouchYPosition = this.container.nativeElement.getBoundingClientRect().top;
-			this.cdr.detectChanges();
+			this.startTouchYPosition = this.getClientRectTopAddition(this.container);
 		}
+	}
+
+	private readjustOnWindowResize(): void {
+		this.onWindowResize$
+			.pipe(filter(() => this.isExpanded(this.currentPosition)))
+			.subscribe(
+				() => (this.startTouchYPosition = this.getClientRectTopAddition(this.container)),
+			);
 	}
 }

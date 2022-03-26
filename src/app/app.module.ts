@@ -9,7 +9,7 @@ import { AboutPageComponent } from './components/about-page/about-page.component
 
 @NgModule({
   declarations: [AppComponent, HomePageComponent, AboutPageComponent],
-  imports: [BrowserModule, AppRoutingModule, NgSwipeablePanelModule],
+  imports: [BrowserModule.withServerTransition({ appId: 'serverApp' }), AppRoutingModule, NgSwipeablePanelModule],
   providers: [],
   bootstrap: [AppComponent],
 })
