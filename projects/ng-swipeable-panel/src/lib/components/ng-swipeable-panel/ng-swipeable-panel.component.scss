@@ -2,7 +2,63 @@
 	transition: transform .08s linear;
 }
 
+.wrapper {
+	&.fullscreen {
+		position: fixed;
+		top: -999px;
+		left: -999px;
+		z-index: -10;
+		visibility: hidden;
+		opacity: 0;
+		pointer-events: none;
+		touch-action: none;
+
+		&.fullscreen-visible {
+			inset: 0;
+			z-index: 10;
+			visibility: visible;
+			opacity: 1;
+			pointer-events: auto;
+			touch-action: auto;
+			background: rgba(#000, 0.8);
+		}
+
+		//&.fullscreen-visible {
+		//	inset: 0;
+		//	z-index: 10;
+		//	pointer-events: auto;
+		//	animation: revealWrapper .1s linear forwards;
+		//
+		//	.container {
+		//		animation: revealContainer .2s linear forwards;
+		//	}
+		//}
+	}
+}
+
 .content {
 	overflow: auto;
 	height: 100%;
+}
+
+@keyframes revealWrapper {
+	0% {
+		visibility: hidden;
+		background: none;
+		opacity: 0;
+	}
+	100% {
+		visibility: visible;
+		background: rgba(#000, 0.8);
+		opacity: 1;
+	}
+}
+
+@keyframes revealContainer {
+	0% {
+		transform: translateY(100%);
+	}
+	100% {
+		transform: translateY(0);
+	}
 }

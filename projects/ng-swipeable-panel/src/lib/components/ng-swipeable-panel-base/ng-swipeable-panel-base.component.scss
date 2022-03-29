@@ -3,6 +3,7 @@
 	left: 0;
 	right: 0;
 	bottom: 0;
+	z-index: 10;
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
@@ -16,6 +17,7 @@
 
 .handle {
 	position: relative;
+	flex-shrink: 0;
 
 	&:after {
 		content: '';

@@ -1,20 +1,25 @@
 <div
-	#container
-	[ngClass]="{ transition: transition }"
-	[style]="{
-		transform: handleTransform(),
-		height: maxContainerHeight + 'px'
-	}"
-	class="container"
+	[ngClass]="{ fullscreen: fullScreen, 'fullscreen-visible': fullScreenPanelVisible }"
+	class="wrapper"
 >
 	<div
-		class="handle"
-		[style.height]="minContainerHeight + 'px'"
-		(touchmove)="setTouchPositions($event)"
-		(touchend)="setTouchEndPositions()"
-	></div>
+		#container
+		[ngClass]="{ transition: transition }"
+		[style]="{
+			transform: handleTransform(),
+			height: maxContainerHeight + 'px'
+		}"
+		class="container"
+	>
+		<div
+			[style.height]="minContainerHeight + 'px'"
+			(touchmove)="setTouchPositions($event)"
+			(touchend)="setTouchEndPositions()"
+			class="handle"
+		></div>
 
-	<div class="content">
-		<ng-content></ng-content>
+		<div class="content">
+			<ng-content></ng-content>
+		</div>
 	</div>
 </div>

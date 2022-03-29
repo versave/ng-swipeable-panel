@@ -1,5 +1,5 @@
 import { Directive, ViewContainerRef } from '@angular/core';
-import { NgSwipeablePanelService } from '../../services/ng-swipeable-panel.service';
+import { NgSwipeablePanelExternalService } from '../services/ng-swipeable-panel-external.service';
 
 @Directive({
 	selector: '[ngSwipeablePanelContentContainer]',
@@ -7,7 +7,7 @@ import { NgSwipeablePanelService } from '../../services/ng-swipeable-panel.servi
 export class NgSwipeablePanelExternalContentContainerDirective {
 	constructor(
 		private viewContainerRef: ViewContainerRef,
-		private ngSwipeablePanelService: NgSwipeablePanelService,
+		private ngSwipeablePanelService: NgSwipeablePanelExternalService,
 	) {
 		this.ngSwipeablePanelService.setContainerRef(this.viewContainerRef);
 	}

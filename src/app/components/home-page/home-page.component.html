@@ -4,10 +4,46 @@
 
 		<a routerLink="/about">About</a>
 	</div>
+
+	<button #panelTrigger="ngSwipeablePanelTrigger" ngSwipeablePanelTrigger="panelOneTrigger">
+		Toggle first panel
+	</button>
+
+	<button
+		#panelTriggerSecond="ngSwipeablePanelTrigger"
+		ngSwipeablePanelTrigger="panelSecondTrigger"
+	>
+		Toggle second panel
+	</button>
 </div>
 
-<ng-swipeable-panel [maxContainerHeight]="300" [minContainerHeight]="25" [startExpanded]="true">
+<ng-swipeable-panel
+	[maxContainerHeight]="300"
+	[minContainerHeight]="40"
+	[fullScreen]="true"
+	panelTriggerName="panelOneTrigger"
+>
 	<div>
-		<h1>Content</h1>
+		<h1>Panel 1</h1>
+		<h1>Panel 1</h1>
+		<h1>Panel 1</h1>
+		<h1>Panel 1</h1>
+		<h1>Panel 1</h1>
+		<h1>Panel 1</h1>
+		<h1>Panel 1</h1>
+		<h1>Panel 1</h1>
+		<h1>Panel 1</h1>
+	</div>
+</ng-swipeable-panel>
+
+<ng-swipeable-panel
+	[maxContainerHeight]="200"
+	[minContainerHeight]="30"
+	[fullScreen]="true"
+	panelTriggerName="panelSecondTrigger"
+>
+	<div>
+		<h1>Panel 2</h1>
+		<h1>Panel 2</h1>
 	</div>
 </ng-swipeable-panel>
