@@ -16,7 +16,7 @@ export abstract class NgSwipeablePanelBaseComponent implements OnDestroy {
 	protected onWindowResize$ = fromEvent(window, 'resize').pipe(takeUntil(this.destroy$));
 
 	public ngOnDestroy(): void {
-		this.destroy$.next(undefined);
+		this.destroy$.next(null);
 	}
 
 	protected isHalfAboveOrBelow(halfPoint: 'above' | 'below', currentPosition: number): boolean {

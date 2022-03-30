@@ -1,14 +1,16 @@
 <div
-	[ngClass]="{ fullscreen: fullScreen, 'fullscreen-visible': fullScreenPanelVisible }"
+	[ngClass]="{ fullscreen: fullScreen }"
+	[@wrapperReveal]="fullScreenAnimationState"
 	class="wrapper"
 >
 	<div
 		#container
-		[ngClass]="{ transition: transition }"
 		[style]="{
 			transform: handleTransform(),
-			height: maxContainerHeight + 'px'
+			height: maxContainerHeight + 'px',
+			transition: transition ? '80ms linear' : null
 		}"
+		[@containerReveal]="fullScreenAnimationState"
 		class="container"
 	>
 		<div

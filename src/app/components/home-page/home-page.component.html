@@ -5,7 +5,11 @@
 		<a routerLink="/about">About</a>
 	</div>
 
-	<button #panelTrigger="ngSwipeablePanelTrigger" ngSwipeablePanelTrigger="panelOneTrigger">
+	<button
+		#panelTrigger="ngSwipeablePanelTrigger"
+		ngSwipeablePanelTrigger="panelOneTrigger"
+		(panelActiveEvent)="handlePanelActiveEvent($event)"
+	>
 		Toggle first panel
 	</button>
 
