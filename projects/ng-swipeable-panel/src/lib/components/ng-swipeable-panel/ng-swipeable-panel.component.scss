@@ -1,6 +1,7 @@
 .wrapper {
 	&.fullscreen {
 		position: fixed;
+		inset: 0;
 	}
 }
 

@@ -1,8 +1,18 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import {
+	Component,
+	ElementRef,
+	EventEmitter,
+	Input,
+	OnInit,
+	Output,
+	ViewChild,
+} from '@angular/core';
 import { NgSwipeablePanelBaseComponent } from '../ng-swipeable-panel-base/ng-swipeable-panel-base.component';
-import { filter, takeUntil } from 'rxjs';
+import { filter, fromEvent, takeUntil } from 'rxjs';
 import { NgSwipeablePanelService } from '../../services/ng-swipeable-panel.service';
-import { fullScreenAnimations, FullScreenState } from '../../animations/fullscreen';
+import { fullScreenAnimations, FullScreenState } from '../../animations/fullscreen-animations';
+import { PanelInfo } from '../../models/models';
+import { PlatformService } from '../../services/platform.service';
 
 @Component({
 	selector: 'ng-swipeable-panel',
@@ -15,26 +25,39 @@ import { fullScreenAnimations, FullScreenState } from '../../animations/fullscre
 	animations: fullScreenAnimations,
 })
 export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent implements OnInit {
+	@ViewChild('wrapper', { static: true }) public wrapper: ElementRef<HTMLDivElement>;
 	@ViewChild('container', { static: true }) public container: ElementRef<HTMLDivElement>;
 
 	// Todo: Toggle off on click outside of the container
+	// todo: Adjust animation transition speeds
 	@Input() public fullScreen = false;
-	@Input() public panelTriggerName = '';
+	@Input() public panelName = '';
+
+	@Output() public fullScreenExpandedEvent = new EventEmitter<PanelInfo>();
 
 	public currentPosition = this.minContainerHeight;
-	public fullScreenActive = false;
+	public fullScreenExpanded = false;
 
 	private startTouchYPosition = 0;
 	private touchYPosition = 0;
 
-	constructor(private ngSwipeablePanelService: NgSwipeablePanelService) {
+	constructor(
+		private ngSwipeablePanelService: NgSwipeablePanelService,
+		private platformService: PlatformService,
+	) {
 		super();
 	}
 
 	public ngOnInit(): void {
-		this.setInitialTouchPositions();
+		if (this.fullScreen) {
+			this.handleFullScreenInteractions();
+			this.setInitialFulScreenSettings();
+			this.deactivateFullScreenOnOutsideClick();
+		} else {
+			this.setInitialTouchPositions();
+		}
+
 		this.readjustOnWindowResize();
-		this.handleFullScreenInteractions();
 	}
 
 	public setTouchPositions(event: TouchEvent): void {
@@ -72,8 +95,7 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 
 			// Hide if in full screen mode
 			if (this.fullScreen) {
-				this.currentPosition = 0;
-				this.setFullScreenPanelActive(false);
+				this.setFullScreenActive(false);
 			}
 		} else if (this.isHalfAboveOrBelow('above', this.currentPosition)) {
 			this.currentPosition = this.maxContainerHeight;
@@ -90,7 +112,7 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 			return null;
 		}
 
-		return this.fullScreenActive ? FullScreenState.visible : FullScreenState.hidden;
+		return this.fullScreenExpanded ? FullScreenState.visible : FullScreenState.hidden;
 	}
 
 	private setInitialTouchPositions(): void {
@@ -103,11 +125,20 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 		}
 	}
 
-	private setInitialFullScreenPositions(): void {
+	private setFullScreenPositions(fullScreenStart = false): void {
 		this.currentPosition = this.maxContainerHeight;
 		this.touchYPosition = this.maxContainerHeight;
-		this.startTouchYPosition =
-			this.container.nativeElement.getBoundingClientRect().top - this.minContainerHeight;
+		this.startTouchYPosition = fullScreenStart
+			? this.getClientRectTopAddition(this.container)
+			: this.container.nativeElement.getBoundingClientRect().top - this.minContainerHeight;
+	}
+
+	private setInitialFulScreenSettings(): void {
+		if (this.startExpanded) {
+			this.fullScreenExpanded = true;
+			this.transition = true;
+			this.setFullScreenPositions(true);
+		}
 	}
 
 	private readjustOnWindowResize(): void {
@@ -125,22 +156,52 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 
 		this.ngSwipeablePanelService.panelActive$
 			.pipe(
-				filter((panelInfo) => panelInfo.name === this.panelTriggerName),
+				filter((panelInfo) => panelInfo.name === this.panelName),
 				takeUntil(this.destroy$),
 			)
 			.subscribe(({ active }) => {
-				this.fullScreenActive = active;
+				this.fullScreenExpanded = active;
+				this.fullScreenExpandedEvent.emit({
+					name: this.panelName,
+					active,
+				});
 
 				if (active) {
-					this.setInitialFullScreenPositions();
+					this.setFullScreenPositions();
 				}
 			});
 	}
 
-	private setFullScreenPanelActive(active: boolean): void {
-		this.ngSwipeablePanelService.setPanelActive({
-			name: this.panelTriggerName,
+	private setFullScreenActive(active: boolean): void {
+		if (!active) {
+			this.currentPosition = 0;
+		}
+
+		this.ngSwipeablePanelService.panelActive = {
+			name: this.panelName,
 			active,
-		});
+		};
+	}
+
+	private deactivateFullScreenOnOutsideClick(): void {
+		if (this.platformService.isBrowser() && this.fullScreen) {
+			fromEvent(window, 'click')
+				.pipe(
+					filter(() => this.fullScreenExpanded),
+					takeUntil(this.destroy$),
+				)
+				.subscribe((event) => {
+					const isPointerEvent =
+						event instanceof PointerEvent || event instanceof MouseEvent;
+
+					if (
+						isPointerEvent &&
+						this.wrapper?.nativeElement.contains(event.target as Node) &&
+						!this.container?.nativeElement.contains(event.target as Node)
+					) {
+						this.setFullScreenActive(false);
+					}
+				});
+		}
 	}
 }

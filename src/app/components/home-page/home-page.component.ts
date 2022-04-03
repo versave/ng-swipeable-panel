@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { NgSwipeablePanelTrigger } from '../../../../projects/ng-swipeable-panel/src/lib/directives/ng-swipeable-panel-trigger.directive';
 import { PanelInfo } from '../../../../projects/ng-swipeable-panel/src/lib/models/models';
+import { NgSwipeablePanelService } from '../../../../projects/ng-swipeable-panel/src/lib/services/ng-swipeable-panel.service';
 
 @Component({
 	selector: 'app-home-page',
@@ -8,25 +9,27 @@ import { PanelInfo } from '../../../../projects/ng-swipeable-panel/src/lib/model
 	styleUrls: ['./home-page.component.scss'],
 })
 export class HomePageComponent implements AfterViewInit {
-	@ViewChild('panelTrigger', { static: true }) public panelTrigger: NgSwipeablePanelTrigger;
-	@ViewChild('panelTriggerSecond', { static: true })
-	public panelTriggerSecond: NgSwipeablePanelTrigger;
+	public panelOneName = 'panel-one';
 
-	public fullscreenActive = false;
-
-	constructor() {}
+	constructor(private ngSwipeablePanelService: NgSwipeablePanelService) {}
 
 	public ngAfterViewInit(): void {
 		// Todo: Investigate for a fix. Error: Content changed after it was checked
-		// this.panelTrigger.togglePanel(true);
-		// this.panelTriggerSecond.togglePanel(true);
+		// this.togglePanel(true);
 	}
 
-	public setFullScreenActive(): void {
-		this.fullscreenActive = true;
+	public togglePanel(toggle: boolean): void {
+		this.ngSwipeablePanelService.panelActive = {
+			name: this.panelOneName,
+			active: toggle,
+		};
 	}
 
+	// public setFullScreenActive(): void {
+	// 	this.fullscreenActive = true;
+	// }
+	//
 	public handlePanelActiveEvent(panel: PanelInfo): void {
-		console.log('panel', panel);
+		console.log('panel change event', panel);
 	}
 }

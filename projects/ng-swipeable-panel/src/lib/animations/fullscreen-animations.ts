@@ -19,7 +19,6 @@ export const fullScreenAnimations = [
 		state(
 			FullScreenState.visible,
 			style({
-				inset: 0,
 				'z-index': 20,
 				visibility: 'visible',
 				opacity: 1,
@@ -31,8 +30,6 @@ export const fullScreenAnimations = [
 		state(
 			FullScreenState.hidden,
 			style({
-				top: -999,
-				left: -999,
 				'z-index': -10,
 				visibility: 'hidden',
 				opacity: 0,
@@ -46,7 +43,6 @@ export const fullScreenAnimations = [
 				'300ms',
 				keyframes([
 					style({
-						inset: 0,
 						'z-index': 20,
 						'pointer-events': 'auto',
 						'touch-action': 'auto',
