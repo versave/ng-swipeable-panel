@@ -134,9 +134,10 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 	}
 
 	private setInitialFulScreenSettings(): void {
+		this.transition = true;
+
 		if (this.startExpanded) {
 			this.fullScreenExpanded = true;
-			this.transition = true;
 			this.setFullScreenPositions(true);
 		}
 	}
@@ -150,10 +151,6 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 	}
 
 	private handleFullScreenInteractions(): void {
-		if (!this.fullScreen) {
-			return;
-		}
-
 		this.ngSwipeablePanelService.panelActive$
 			.pipe(
 				filter((panelInfo) => panelInfo.name === this.panelName),
@@ -177,14 +174,14 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 			this.currentPosition = 0;
 		}
 
-		this.ngSwipeablePanelService.panelActive = {
+		this.ngSwipeablePanelService.panelExpanded = {
 			name: this.panelName,
 			active,
 		};
 	}
 
 	private deactivateFullScreenOnOutsideClick(): void {
-		if (this.platformService.isBrowser() && this.fullScreen) {
+		if (this.platformService.isBrowser()) {
 			fromEvent(window, 'click')
 				.pipe(
 					filter(() => this.fullScreenExpanded),

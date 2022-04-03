@@ -19,7 +19,7 @@ export class HomePageComponent implements AfterViewInit {
 	}
 
 	public togglePanel(toggle: boolean): void {
-		this.ngSwipeablePanelService.panelActive = {
+		this.ngSwipeablePanelService.panelExpanded = {
 			name: this.panelOneName,
 			active: toggle,
 		};

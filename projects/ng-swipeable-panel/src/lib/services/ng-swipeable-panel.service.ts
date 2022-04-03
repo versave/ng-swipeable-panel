@@ -6,13 +6,13 @@ import { PanelInfo } from '../models/models';
 	providedIn: 'root',
 })
 export class NgSwipeablePanelService {
-	private _panelActive$: Subject<PanelInfo> = new Subject<PanelInfo>();
+	private _panelExpanded$: Subject<PanelInfo> = new Subject<PanelInfo>();
 
 	public get panelActive$(): Observable<PanelInfo> {
-		return this._panelActive$.asObservable();
+		return this._panelExpanded$.asObservable();
 	}
 
-	public set panelActive(panelInfo: PanelInfo) {
-		this._panelActive$.next(panelInfo);
+	public set panelExpanded(panelInfo: PanelInfo) {
+		this._panelExpanded$.next(panelInfo);
 	}
 }

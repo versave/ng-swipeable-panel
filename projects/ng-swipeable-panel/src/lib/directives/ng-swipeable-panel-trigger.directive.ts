@@ -14,7 +14,7 @@ export class NgSwipeablePanelTrigger {
 			);
 		}
 
-		this.ngSwipeablePanelService.panelActive = {
+		this.ngSwipeablePanelService.panelExpanded = {
 			name: this.ngSwipeablePanelTrigger,
 			active: true,
 		};
