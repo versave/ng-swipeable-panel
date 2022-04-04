@@ -1,6 +1,6 @@
 import { ElementRef, Injectable, Input, OnDestroy } from '@angular/core';
 import { fromEvent, Subject, takeUntil } from 'rxjs';
-import { PlatformService } from '../../../swipeable-panel/services/platform.service';
+import { PlatformService } from '../../services/platform.service';
 
 @Injectable()
 export abstract class NgSwipeablePanelBaseComponent implements OnDestroy {
@@ -12,7 +12,7 @@ export abstract class NgSwipeablePanelBaseComponent implements OnDestroy {
 
 	@Input() protected startExpanded = false;
 
-	public transition = false;
+	public transition = true;
 
 	protected destroy$ = new Subject<unknown>();
 	protected onWindowResize$ = fromEvent(window, 'resize').pipe(takeUntil(this.destroy$));

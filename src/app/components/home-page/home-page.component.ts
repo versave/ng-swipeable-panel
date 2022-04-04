@@ -8,14 +8,16 @@ import { NgSwipeablePanelService } from '../../../../projects/ng-swipeable-panel
 	templateUrl: './home-page.component.html',
 	styleUrls: ['./home-page.component.scss'],
 })
-export class HomePageComponent implements AfterViewInit {
+export class HomePageComponent implements OnInit {
 	public panelOneName = 'panel-one';
+	public panelOneExpanded = false;
 
 	constructor(private ngSwipeablePanelService: NgSwipeablePanelService) {}
 
-	public ngAfterViewInit(): void {
-		// Todo: Investigate for a fix. Error: Content changed after it was checked
-		// this.togglePanel(true);
+	public ngOnInit(): void {
+		this.ngSwipeablePanelService.panelExpanded$.subscribe((panelInfo: PanelInfo) => {
+			this.panelOneExpanded = panelInfo.active;
+		});
 	}
 
 	public togglePanel(toggle: boolean): void {
@@ -23,12 +25,10 @@ export class HomePageComponent implements AfterViewInit {
 			name: this.panelOneName,
 			active: toggle,
 		};
+
+		this.panelOneExpanded = toggle;
 	}
 
-	// public setFullScreenActive(): void {
-	// 	this.fullscreenActive = true;
-	// }
-	//
 	public handlePanelActiveEvent(panel: PanelInfo): void {
 		console.log('panel change event', panel);
 	}

@@ -8,7 +8,7 @@ import { PanelInfo } from '../../shared/models/models';
 export class NgSwipeablePanelService {
 	private _panelExpanded$: Subject<PanelInfo> = new Subject<PanelInfo>();
 
-	public get panelActive$(): Observable<PanelInfo> {
+	public get panelExpanded$(): Observable<PanelInfo> {
 		return this._panelExpanded$.asObservable();
 	}
 

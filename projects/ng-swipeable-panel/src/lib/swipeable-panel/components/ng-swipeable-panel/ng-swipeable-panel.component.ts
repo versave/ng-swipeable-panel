@@ -12,7 +12,7 @@ import { filter, fromEvent, takeUntil } from 'rxjs';
 import { NgSwipeablePanelService } from '../../services/ng-swipeable-panel.service';
 import { fullScreenAnimations, FullScreenState } from '../../fullscreen-animations';
 import { PanelInfo } from '../../../shared/models/models';
-import { PlatformService } from '../../services/platform.service';
+import { PlatformService } from '../../../shared/services/platform.service';
 
 @Component({
 	selector: 'ng-swipeable-panel',
@@ -28,15 +28,17 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 	@ViewChild('wrapper', { static: true }) public wrapper: ElementRef<HTMLDivElement>;
 	@ViewChild('container', { static: true }) public container: ElementRef<HTMLDivElement>;
 
-	// Todo: Toggle off on click outside of the container
-	// todo: Adjust animation transition speeds
+	// todo: Adjust animation transition
+	// todo: cleanup
+	// todo: test
+	// todo: test ssr
 	@Input() public fullScreen = false;
 	@Input() public panelName = '';
 
-	@Output() public fullScreenExpandedEvent = new EventEmitter<PanelInfo>();
+	@Output() public expandedEvent = new EventEmitter<PanelInfo>();
 
 	public currentPosition = this.minContainerHeight;
-	public fullScreenExpanded = false;
+	public expanded = false;
 
 	private startTouchYPosition = 0;
 	private touchYPosition = 0;
@@ -50,17 +52,17 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 
 	public ngOnInit(): void {
 		if (this.fullScreen) {
-			this.handleFullScreenInteractions();
-			this.setInitialFulScreenSettings();
+			this.setInitialFullScreenSettings();
 			this.deactivateFullScreenOnOutsideClick();
 		} else {
 			this.setInitialTouchPositions();
 		}
 
+		this.listenForExpandedActions();
 		this.readjustOnWindowResize();
 	}
 
-	public setTouchPositions(event: TouchEvent): void {
+	public setTouchMovePositions(event: TouchEvent): void {
 		const touchY = event.touches[0].clientY;
 
 		if (this.startTouchYPosition === 0) {
@@ -92,13 +94,10 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 			this.touchYPosition = 0;
 			this.startTouchYPosition = 0;
 			this.currentPosition = this.minContainerHeight;
-
-			// Hide if in full screen mode
-			if (this.fullScreen) {
-				this.setFullScreenActive(false);
-			}
+			this.setExpanded(false);
 		} else if (this.isHalfAboveOrBelow('above', this.currentPosition)) {
 			this.currentPosition = this.maxContainerHeight;
+			this.setExpanded(true);
 		}
 	}
 
@@ -112,7 +111,7 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 			return null;
 		}
 
-		return this.fullScreenExpanded ? FullScreenState.visible : FullScreenState.hidden;
+		return this.expanded ? FullScreenState.visible : FullScreenState.hidden;
 	}
 
 	private setInitialTouchPositions(): void {
@@ -120,12 +119,19 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 
 		if (this.startExpanded) {
 			this.currentPosition = this.maxContainerHeight;
-			this.touchYPosition = this.maxContainerHeight;
 			this.startTouchYPosition = this.getClientRectTopAddition(this.container);
+			this.expanded = true;
 		}
 	}
 
-	private setFullScreenPositions(fullScreenStart = false): void {
+	private setTouchPositions(expanded: boolean): void {
+		this.currentPosition = expanded ? this.maxContainerHeight : this.minContainerHeight;
+		this.startTouchYPosition = expanded
+			? this.container.nativeElement.getBoundingClientRect().top
+			: 0;
+	}
+
+	private setFullScreenTouchPositions(fullScreenStart = false): void {
 		this.currentPosition = this.maxContainerHeight;
 		this.touchYPosition = this.maxContainerHeight;
 		this.startTouchYPosition = fullScreenStart
@@ -133,12 +139,10 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 			: this.container.nativeElement.getBoundingClientRect().top - this.minContainerHeight;
 	}
 
-	private setInitialFulScreenSettings(): void {
-		this.transition = true;
-
+	private setInitialFullScreenSettings(): void {
 		if (this.startExpanded) {
-			this.fullScreenExpanded = true;
-			this.setFullScreenPositions(true);
+			this.expanded = true;
+			this.setFullScreenTouchPositions(true);
 		}
 	}
 
@@ -150,30 +154,36 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 			);
 	}
 
-	private handleFullScreenInteractions(): void {
-		this.ngSwipeablePanelService.panelActive$
+	private listenForExpandedActions(): void {
+		this.ngSwipeablePanelService.panelExpanded$
 			.pipe(
 				filter((panelInfo) => panelInfo.name === this.panelName),
 				takeUntil(this.destroy$),
 			)
 			.subscribe(({ active }) => {
-				this.fullScreenExpanded = active;
-				this.fullScreenExpandedEvent.emit({
+				this.expandedEvent.emit({
 					name: this.panelName,
 					active,
 				});
 
-				if (active) {
-					this.setFullScreenPositions();
+				if (this.expanded === active) {
+					return;
+				}
+
+				this.expanded = active;
+
+				if (this.fullScreen) {
+					if (active) {
+						this.setFullScreenTouchPositions();
+					}
+				} else {
+					this.setTouchPositions(active);
 				}
 			});
 	}
 
-	private setFullScreenActive(active: boolean): void {
-		if (!active) {
-			this.currentPosition = 0;
-		}
-
+	private setExpanded(active: boolean): void {
+		this.expanded = active;
 		this.ngSwipeablePanelService.panelExpanded = {
 			name: this.panelName,
 			active,
@@ -184,7 +194,7 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 		if (this.platformService.isBrowser()) {
 			fromEvent(window, 'click')
 				.pipe(
-					filter(() => this.fullScreenExpanded),
+					filter(() => this.expanded),
 					takeUntil(this.destroy$),
 				)
 				.subscribe((event) => {
@@ -196,7 +206,7 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 						this.wrapper?.nativeElement.contains(event.target as Node) &&
 						!this.container?.nativeElement.contains(event.target as Node)
 					) {
-						this.setFullScreenActive(false);
+						this.setExpanded(false);
 					}
 				});
 		}
