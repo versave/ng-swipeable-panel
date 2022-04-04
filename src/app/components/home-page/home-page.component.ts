@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { NgSwipeablePanelTrigger } from '../../../../projects/ng-swipeable-panel/src/lib/directives/ng-swipeable-panel-trigger.directive';
-import { PanelInfo } from '../../../../projects/ng-swipeable-panel/src/lib/models/models';
-import { NgSwipeablePanelService } from '../../../../projects/ng-swipeable-panel/src/lib/services/ng-swipeable-panel.service';
+import { NgSwipeablePanelTrigger } from '../../../../projects/ng-swipeable-panel/src/lib/swipeable-panel/directives/ng-swipeable-panel-trigger.directive';
+import { PanelInfo } from '../../../../projects/ng-swipeable-panel/src/lib/shared/models/models';
+import { NgSwipeablePanelService } from '../../../../projects/ng-swipeable-panel/src/lib/swipeable-panel/services/ng-swipeable-panel.service';
 
 @Component({
 	selector: 'app-home-page',

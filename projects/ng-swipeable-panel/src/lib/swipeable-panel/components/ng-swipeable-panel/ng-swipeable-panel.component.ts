@@ -7,18 +7,18 @@ import {
 	Output,
 	ViewChild,
 } from '@angular/core';
-import { NgSwipeablePanelBaseComponent } from '../ng-swipeable-panel-base/ng-swipeable-panel-base.component';
+import { NgSwipeablePanelBaseComponent } from '../../../shared/components/ng-swipeable-panel-base/ng-swipeable-panel-base.component';
 import { filter, fromEvent, takeUntil } from 'rxjs';
 import { NgSwipeablePanelService } from '../../services/ng-swipeable-panel.service';
-import { fullScreenAnimations, FullScreenState } from '../../animations/fullscreen-animations';
-import { PanelInfo } from '../../models/models';
+import { fullScreenAnimations, FullScreenState } from '../../fullscreen-animations';
+import { PanelInfo } from '../../../shared/models/models';
 import { PlatformService } from '../../services/platform.service';
 
 @Component({
 	selector: 'ng-swipeable-panel',
 	templateUrl: './ng-swipeable-panel.component.html',
 	styleUrls: [
-		'../ng-swipeable-panel-base/ng-swipeable-panel-base.component.scss',
+		'../../../shared/components/ng-swipeable-panel-base/ng-swipeable-panel-base.component.scss',
 		'./ng-swipeable-panel.component.scss',
 	],
 	inputs: NgSwipeablePanelBaseComponent.inputs,

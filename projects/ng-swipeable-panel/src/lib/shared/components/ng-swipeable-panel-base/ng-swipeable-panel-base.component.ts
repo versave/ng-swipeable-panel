@@ -1,6 +1,6 @@
 import { ElementRef, Injectable, Input, OnDestroy } from '@angular/core';
 import { fromEvent, Subject, takeUntil } from 'rxjs';
-import { PlatformService } from '../../services/platform.service';
+import { PlatformService } from '../../../swipeable-panel/services/platform.service';
 
 @Injectable()
 export abstract class NgSwipeablePanelBaseComponent implements OnDestroy {
