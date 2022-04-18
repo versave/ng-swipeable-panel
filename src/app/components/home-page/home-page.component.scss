@@ -2,3 +2,23 @@
   height: 200vh;
   background: antiquewhite;
 }
+
+.panel-content {
+	padding: 0 10px;
+
+	* {
+		margin-bottom: 10px;
+	}
+
+	img {
+		width: 100%;
+	}
+}
+
+:host {
+	ng-swipeable-panel {
+		::ng-deep {
+			background: red;
+		}
+	}
+}

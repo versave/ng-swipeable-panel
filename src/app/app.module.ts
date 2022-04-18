@@ -6,9 +6,10 @@ import { AppComponent } from './app.component';
 import { NgSwipeablePanelModule } from '../../projects/ng-swipeable-panel/src/lib/swipeable-panel/ng-swipeable-panel.module';
 import { HomePageComponent } from './components/home-page/home-page.component';
 import { AboutPageComponent } from './components/about-page/about-page.component';
+import { NavComponent } from './components/nav/nav.component';
 
 @NgModule({
-	declarations: [AppComponent, HomePageComponent, AboutPageComponent],
+	declarations: [AppComponent, HomePageComponent, AboutPageComponent, NavComponent],
 	imports: [
 		BrowserModule.withServerTransition({ appId: 'serverApp' }),
 		AppRoutingModule,

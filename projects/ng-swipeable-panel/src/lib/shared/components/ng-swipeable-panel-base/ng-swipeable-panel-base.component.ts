@@ -1,13 +1,11 @@
 import { ElementRef, Injectable, Input, OnDestroy } from '@angular/core';
 import { fromEvent, Subject, takeUntil } from 'rxjs';
-import { PlatformService } from '../../services/platform.service';
 
 @Injectable()
 export abstract class NgSwipeablePanelBaseComponent implements OnDestroy {
 	public static inputs = ['minContainerHeight', 'maxContainerHeight', 'startExpanded'];
 
-	// todo: determine correct sizes
-	@Input() public maxContainerHeight = 235;
+	@Input() public maxContainerHeight = 200;
 	@Input() public minContainerHeight = 30;
 
 	@Input() protected startExpanded = false;

@@ -40,6 +40,7 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 	public currentPosition = this.minContainerHeight;
 	public expanded = false;
 
+	private touchStartYPosition = 0;
 	private startTouchYPosition = 0;
 	private touchYPosition = 0;
 
@@ -62,18 +63,29 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 		this.readjustOnWindowResize();
 	}
 
-	public setTouchMovePositions(event: TouchEvent): void {
+	public setTouchStartPositions(event: TouchEvent) {
 		const touchY = event.touches[0].clientY;
 
 		if (this.startTouchYPosition === 0) {
 			this.startTouchYPosition = touchY;
 		}
 
+		this.touchStartYPosition = this.isExpanded(this.currentPosition)
+			? -(touchY - this.startTouchYPosition) + this.minContainerHeight
+			: 0;
+	}
+
+	public setTouchMovePositions(event: TouchEvent): void {
+		const touchY = event.touches[0].clientY;
+		const touchYDifference =
+			this.touchStartYPosition !== 0 ? this.maxContainerHeight - this.touchStartYPosition : 0;
+
 		if (this.transition) {
 			this.transition = false;
 		}
 
-		this.touchYPosition = -(touchY - this.startTouchYPosition) + this.minContainerHeight;
+		this.touchYPosition =
+			-(touchY - this.startTouchYPosition) + this.minContainerHeight + touchYDifference;
 
 		const isAboveMaxHeight = this.touchYPosition >= this.maxContainerHeight;
 		const isBelowMinHeight = this.touchYPosition <= this.minContainerHeight;

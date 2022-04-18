@@ -9,13 +9,14 @@
 		[style]="{
 			transform: handleTransform(),
 			height: maxContainerHeight + 'px',
-			transition: transition ? '80ms linear' : null
+			transition: transition ? '100ms linear' : null
 		}"
 		[@containerReveal]="fullScreenAnimationState"
 		class="container"
 	>
 		<div
 			[style.height]="minContainerHeight + 'px'"
+			(touchstart)="setTouchStartPositions($event)"
 			(touchmove)="setTouchMovePositions($event)"
 			(touchend)="setTouchEndPositions()"
 			class="handle"

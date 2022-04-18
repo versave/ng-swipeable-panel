@@ -19,38 +19,35 @@ export const fullScreenAnimations = [
 		state(
 			FullScreenState.visible,
 			style({
-				'z-index': 20,
+				zIndex: 20,
 				visibility: 'visible',
-				opacity: 1,
-				'pointer-events': 'auto',
-				'touch-action': 'auto',
+				pointerEvents: 'auto',
+				touchAction: 'auto',
 				background: 'rgba(0, 0, 0, 0.8)',
 			}),
 		),
 		state(
 			FullScreenState.hidden,
 			style({
-				'z-index': -10,
+				zIndex: -10,
 				visibility: 'hidden',
-				opacity: 0,
-				'pointer-events': 'none',
-				'touch-action': 'none',
+				pointerEvents: 'none',
+				touchAction: 'none',
 				background: 'none',
 			}),
 		),
 		transition(`${FullScreenState.hidden} => ${FullScreenState.visible}`, [
 			animate(
-				'300ms',
+				'150ms',
 				keyframes([
 					style({
-						'z-index': 20,
-						'pointer-events': 'auto',
-						'touch-action': 'auto',
+						zIndex: 20,
+						pointerEvents: 'auto',
+						touchAction: 'auto',
 						offset: 0,
 					}),
 					style({
 						visibility: 'visible',
-						opacity: 1,
 						background: 'rgba(0, 0, 0, 0.8)',
 						offset: 1,
 					}),
@@ -60,13 +57,12 @@ export const fullScreenAnimations = [
 		]),
 		transition(`${FullScreenState.visible} => ${FullScreenState.hidden}`, [
 			animate(
-				'300ms',
+				'150ms',
 				keyframes([
 					style({
 						visibility: 'hidden',
-						opacity: 0,
-						'pointer-events': 'none',
-						'touch-action': 'none',
+						pointerEvents: 'none',
+						touchAction: 'none',
 						background: 'none',
 						offset: 1,
 					}),
@@ -90,7 +86,7 @@ export const fullScreenAnimations = [
 		transition(
 			`${FullScreenState.hidden} => ${FullScreenState.visible}`,
 			animate(
-				'200ms',
+				'100ms',
 				keyframes([
 					style({ transform: 'translate3d(0, 100%, 0)', offset: 0 }),
 					style({ transform: 'translate3d(0, 0, 0)', offset: 1 }),
