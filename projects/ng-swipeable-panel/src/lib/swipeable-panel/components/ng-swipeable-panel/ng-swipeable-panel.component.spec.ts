@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NgSwipeablePanelComponent } from './ng-swipeable-panel.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('NgSwipeablePanelComponent', () => {
 	let component: NgSwipeablePanelComponent;
@@ -9,6 +10,7 @@ describe('NgSwipeablePanelComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			declarations: [NgSwipeablePanelComponent],
+			imports: [BrowserAnimationsModule],
 		}).compileComponents();
 	});
 
