@@ -89,21 +89,35 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 			this.currentPosition = this.minContainerHeight;
 		} else {
 			this.currentPosition = this.touchYPosition;
+			this.setLastTouchPositions(this.touchYPosition);
 		}
 	}
 
 	public setTouchEndPositions(): void {
+		const lastTouchPositionsDifference =
+			this.lastTouchPositions[0] - this.lastTouchPositions[1] || 0;
+		const passExpandedThreshold = lastTouchPositionsDifference >= this.touchSwipeThreshold;
+		const passCollapsedThreshold = lastTouchPositionsDifference <= -this.touchSwipeThreshold;
+		const belowCollapsedThreshold = lastTouchPositionsDifference > -this.touchSwipeThreshold;
+		const collapsePanel =
+			(this.isHalfAboveOrBelow('below', this.touchYPosition) && belowCollapsedThreshold) ||
+			passExpandedThreshold;
+		const expandPanel =
+			this.isHalfAboveOrBelow('above', this.touchYPosition) || passCollapsedThreshold;
+
 		this.transition = true;
 
-		if (this.isHalfAboveOrBelow('below', this.currentPosition)) {
+		if (collapsePanel) {
 			this.touchYPosition = 0;
 			this.startTouchYPosition = 0;
 			this.currentPosition = this.minContainerHeight;
 			this.setExpanded(false);
-		} else if (this.isHalfAboveOrBelow('above', this.currentPosition)) {
+		} else if (expandPanel) {
 			this.currentPosition = this.maxContainerHeight;
 			this.setExpanded(true);
 		}
+
+		this.lastTouchPositions = [];
 	}
 
 	public handleTransform(): string {

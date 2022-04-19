@@ -14,6 +14,8 @@ export abstract class NgSwipeablePanelBaseComponent implements OnDestroy {
 
 	protected destroy$ = new Subject<unknown>();
 	protected onWindowResize$ = fromEvent(window, 'resize').pipe(takeUntil(this.destroy$));
+	protected touchSwipeThreshold = 5;
+	protected lastTouchPositions: number[] = [];
 
 	public ngOnDestroy(): void {
 		this.destroy$.next(null);
@@ -38,5 +40,13 @@ export abstract class NgSwipeablePanelBaseComponent implements OnDestroy {
 		const clientRectTopAddition = containerBaseHeight - this.minContainerHeight;
 
 		return container.nativeElement.getBoundingClientRect().top + clientRectTopAddition;
+	}
+
+	protected setLastTouchPositions(lastTouch: number): void {
+		this.lastTouchPositions.push(lastTouch);
+
+		if (this.lastTouchPositions.length > 2) {
+			this.lastTouchPositions.shift();
+		}
 	}
 }
