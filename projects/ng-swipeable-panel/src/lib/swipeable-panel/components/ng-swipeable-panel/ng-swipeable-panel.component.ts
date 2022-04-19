@@ -28,10 +28,6 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 	@ViewChild('wrapper', { static: true }) public wrapper: ElementRef<HTMLDivElement>;
 	@ViewChild('container', { static: true }) public container: ElementRef<HTMLDivElement>;
 
-	// todo: Adjust animation transition
-	// todo: cleanup
-	// todo: test
-	// todo: test ssr
 	@Input() public fullScreen = false;
 	@Input() public panelName = '';
 
@@ -53,7 +49,7 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 
 	public ngOnInit(): void {
 		if (this.fullScreen) {
-			this.setInitialFullScreenSettings();
+			this.setExpandedStartFullScreenSettings();
 			this.deactivateFullScreenOnOutsideClick();
 		} else {
 			this.setInitialTouchPositions();
@@ -80,12 +76,9 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 		const touchYDifference =
 			this.touchStartYPosition !== 0 ? this.maxContainerHeight - this.touchStartYPosition : 0;
 
-		if (this.transition) {
-			this.transition = false;
-		}
-
 		this.touchYPosition =
 			-(touchY - this.startTouchYPosition) + this.minContainerHeight + touchYDifference;
+		this.transition = false;
 
 		const isAboveMaxHeight = this.touchYPosition >= this.maxContainerHeight;
 		const isBelowMinHeight = this.touchYPosition <= this.minContainerHeight;
@@ -151,7 +144,7 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 			: this.container.nativeElement.getBoundingClientRect().top - this.minContainerHeight;
 	}
 
-	private setInitialFullScreenSettings(): void {
+	private setExpandedStartFullScreenSettings(): void {
 		if (this.startExpanded) {
 			this.expanded = true;
 			this.setFullScreenTouchPositions(true);
@@ -184,10 +177,8 @@ export class NgSwipeablePanelComponent extends NgSwipeablePanelBaseComponent imp
 
 				this.expanded = active;
 
-				if (this.fullScreen) {
-					if (active) {
-						this.setFullScreenTouchPositions();
-					}
+				if (this.fullScreen && active) {
+					this.setFullScreenTouchPositions();
 				} else {
 					this.setTouchPositions(active);
 				}
